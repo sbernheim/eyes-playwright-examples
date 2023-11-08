@@ -106,5 +106,9 @@ dist
 # macOS
 .DS_Store
 
+# VSCode settings
+.vscode
+
 # Playwright
 playwright-report
+test-results

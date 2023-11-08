@@ -2,9 +2,9 @@
 // It runs the test once locally.
 // If you use the Ultrafast Grid, then it performs cross-browser testing against multiple unique browsers.
 
-import { test } from '@playwright/test';
+import { test } from '../eyes-test';
 import {
-  BatchInfo,
+  /* BatchInfo,
   Configuration,
   EyesRunner,
   ClassicRunner,
@@ -12,24 +12,24 @@ import {
   BrowserType,
   DeviceName,
   ScreenOrientation,
-  Eyes,
+  Eyes, */
   Target
 } from '@applitools/eyes-playwright';
 
 // Settings to control how tests are run.
 // These could be set by environment variables or other input mechanisms.
 // They are hard-coded here to keep the example project simple.
-export const USE_ULTRAFAST_GRID: boolean = true;
+//export const USE_ULTRAFAST_GRID: boolean = false;
 
 // Applitools objects to share for all tests
-export let Batch: BatchInfo;
+/*export let Batch: BatchInfo;
 export let Config: Configuration;
-export let Runner: EyesRunner;
+export let Runner: EyesRunner;*/
 
 // This method sets up the configuration for running visual tests.
 // The configuration is shared by all tests in a test suite, so it belongs in a `beforeAll` method.
 // If you have more than one test class, then you should abstract this configuration to avoid duplication.
-test.beforeAll(async() => {
+/*test.beforeAll(async() => {
 
   if (USE_ULTRAFAST_GRID) {
     // Create the runner for the Ultrafast Grid.
@@ -60,25 +60,25 @@ test.beforeAll(async() => {
     // Add 3 desktop browsers with different viewports for cross-browser testing in the Ultrafast Grid.
     // Other browsers are also available, like Edge and IE.
     Config.addBrowser(800, 600, BrowserType.CHROME);
-    Config.addBrowser(1600, 1200, BrowserType.FIREFOX);
-    Config.addBrowser(1024, 768, BrowserType.SAFARI);
+    //Config.addBrowser(1600, 1200, BrowserType.FIREFOX);
+    //Config.addBrowser(1024, 768, BrowserType.SAFARI);
   
     // Add 2 mobile emulation devices with different orientations for cross-browser testing in the Ultrafast Grid.
     // Other mobile devices are available.
-    Config.addDeviceEmulation(DeviceName.iPhone_11, ScreenOrientation.PORTRAIT);
-    Config.addDeviceEmulation(DeviceName.Nexus_10, ScreenOrientation.LANDSCAPE);
+    //Config.addDeviceEmulation(DeviceName.iPhone_11, ScreenOrientation.PORTRAIT);
+    //Config.addDeviceEmulation(DeviceName.Nexus_10, ScreenOrientation.LANDSCAPE);
   }
-});
+});*/
 
 // This "describe" method contains related test cases with per-test setup and cleanup.
 // In this example, there is only one test.
 test.describe('ACME Bank', () => {
 
   // Test-specific objects
-  let eyes: Eyes;
+  //let eyes: Eyes;
 
   // This method sets up each test with its own Applitools Eyes object.
-  test.beforeEach(async ({ page }) => {
+  /*test.beforeEach(async ({ page }) => {
 
     // Create the Applitools Eyes object connected to the runner and set its configuration.
     eyes = new Eyes(Runner, Config);
@@ -105,14 +105,14 @@ test.describe('ACME Bank', () => {
       // Eyes will resize the web browser to match the requested viewport size.
       // This parameter is optional but encouraged in order to produce consistent results.
       { width: 1200, height: 600 });
-  });
+  });*/
   
   // This test covers login for the Applitools demo site, which is a dummy banking app.
   // The interactions use typical Playwright calls,
   // but the verifications use one-line snapshot calls with Applitools Eyes.
   // If the page ever changes, then Applitools will detect the changes and highlight them in the Eyes Test Manager.
   // Traditional assertions that scrape the page for text values are not needed here.
-  test('log into a bank account', async ({ page }) => {
+  test('log into a bank account', async ({ page, eyes }) => {
 
     // Load the login page.
     await page.goto('https://demo.applitools.com');
@@ -130,18 +130,34 @@ test.describe('ACME Bank', () => {
     await eyes.check('Main page', Target.window().fully().layout());
   });
   
+  test('log into a sandbox bank account', async ({ page, eyes }) => {
+    // Load the login page.
+    await page.goto('https://sandbox.applitools.com/bank');
+
+    // Verify the full login page loaded correctly.
+    await eyes.check('Login page', Target.window().fully());
+
+    // Perform login.
+    await page.locator('id=username').fill('andy');
+    await page.locator('id=password').fill('i<3pandas');
+    await page.locator('id=log-in').click();
+
+    // Verify the full main page loaded correctly.
+    await eyes.check('Main page', Target.window().fully().layout());
+  });
+
   // This method performs cleanup after each test.
-  test.afterEach(async () => {
+  /*test.afterEach(async () => {
 
     // Close Eyes to tell the server it should display the results.
     await eyes.close();
-  });
+  });*/
 });
 
-test.afterAll(async() => {
+/*test.afterAll(async() => {
 
   // Close the batch and report visual differences to the console.
   // Note that it forces Playwright to wait synchronously for all visual checkpoints to complete.
   const results = await Runner.getAllTestResults();
   console.log('Visual test results', results);
-});
+});*/
